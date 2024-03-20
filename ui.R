@@ -108,8 +108,6 @@ body <- dashboardBody(
                 column(width = 4),
                 
                 column(width = 2, downloadButton("downBtn", "Download the Data", style = "width:100%;")),
-                
-                #column(width = 2),
 
                 column(width = 2, actionButton("update", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
                 
@@ -129,46 +127,44 @@ body <- dashboardBody(
             
             fluidPage( 
               
-              # User input for data table filtering
-              fluidRow(
-                # facs <- sort(unique(info$`Facility Name`)),
-                column(width = 4, pickerInput("Facility", label = strong("Facility:"),
-                                              
-                                              choices = (sort(unique(info$`Facility Name`))), 
-                                              
-                                              selected = (sort(unique(info$`Facility Name`))), multiple = T,
-                                              
-                                              options = list(`actions-box` = T))),
-                
-                
-                # types <- sort(unique(info$`Program Type`)),
-                
-                column(width = 4, pickerInput("Program", label = strong("Program Type:"),
-                                              
-                                              choices = (sort(unique(info$`Program Type`))), 
-                                              
-                                              selected = (sort(unique(info$`Program Type`))), multiple = T,
-                                              
-                                              options = list(`actions-box` = T))),
-                
-                
-                column(width = 4, dateRangeInput("Dates", strong("Report Date:"), 
-                                                 
-                                                 start = dates[1], end = dates[2], min = dates[1], max = dates[2])),
-              ),
-              
-              # Download and update data buttons
-              fluidRow(
-                column(width = 4),
-                
-                column(width = 2, downloadButton("downBtn", "Download the Data", style = "width:100%;")),
-                
-                #column(width = 2),
-                
-                column(width = 2, actionButton("update", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
-                
-                column(width = 4)
-              ),
+              # # User input for data table filtering
+              # fluidRow(
+              #   # facs <- sort(unique(info$`Facility Name`)),
+              #   column(width = 4, pickerInput("Facility", label = strong("Facility:"),
+              #                                 
+              #                                 choices = (sort(unique(info$`Facility Name`))), 
+              #                                 
+              #                                 selected = (sort(unique(info$`Facility Name`))), multiple = T,
+              #                                 
+              #                                 options = list(`actions-box` = T))),
+              #   
+              #   
+              #   # types <- sort(unique(info$`Program Type`)),
+              #   
+              #   column(width = 4, pickerInput("Program", label = strong("Program Type:"),
+              #                                 
+              #                                 choices = (sort(unique(info$`Program Type`))), 
+              #                                 
+              #                                 selected = (sort(unique(info$`Program Type`))), multiple = T,
+              #                                 
+              #                                 options = list(`actions-box` = T))),
+              #   
+              #   
+              #   column(width = 4, dateRangeInput("Dates", strong("Report Date:"), 
+              #                                    
+              #                                    start = dates[1], end = dates[2], min = dates[1], max = dates[2])),
+              # ),
+              # 
+              # # Download and update data buttons
+              # fluidRow(
+              #   column(width = 4),
+              #   
+              #   column(width = 2, downloadButton("downBtn", "Download the Data", style = "width:100%;")),
+              #   
+              #   column(width = 2, actionButton("update", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
+              #   
+              #   column(width = 4)
+              # ),
               
               # Data Table readout
               #TODO: adjust height to scale with change in browser viewing window
@@ -183,40 +179,40 @@ body <- dashboardBody(
             
             fluidPage( 
               
-              # User input for data table filtering
-              fluidRow(
-                # facs <- sort(unique(info$`Facility Name`)),
-                column(width = 4, pickerInput("Facility", label = strong("Facility:"),
-                                              
-                                              choices = (sort(unique(info$`Facility Name`))), selected = (sort(unique(info$`Facility Name`))), multiple = T,
-                                              
-                                              options = list(`actions-box` = T))),
-                
-                
-                # types <- sort(unique(info$`Program Type`)),
-                
-                column(width = 4, pickerInput("Program", label = strong("Program Type:"),
-                                              
-                                              choices = (sort(unique(info$`Program Type`))), selected = (sort(unique(info$`Program Type`))), multiple = T,
-                                              
-                                              options = list(`actions-box` = T))),
-                
-                
-                column(width = 4, dateRangeInput("Dates", strong("Report Date:"), 
-                                                 
-                                                 start = dates[1], end = dates[2], min = dates[1], max = dates[2])),
-              ),
-              
-              # Download and update data buttons
-              fluidRow(
-                column(width = 4),
-                
-                column(width = 2, downloadButton("downBtn", "Download the Data", style = "width:100%;")),
-                
-                column(width = 2, actionButton("update", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
-                
-                column(width = 4)
-              ),
+              # # User input for data table filtering
+              # fluidRow(
+              #   # facs <- sort(unique(info$`Facility Name`)),
+              #   column(width = 4, pickerInput("Facility", label = strong("Facility:"),
+              #                                 
+              #                                 choices = (sort(unique(info$`Facility Name`))), selected = (sort(unique(info$`Facility Name`))), multiple = T,
+              #                                 
+              #                                 options = list(`actions-box` = T))),
+              #   
+              #   
+              #   # types <- sort(unique(info$`Program Type`)),
+              #   
+              #   column(width = 4, pickerInput("Program", label = strong("Program Type:"),
+              #                                 
+              #                                 choices = (sort(unique(info$`Program Type`))), selected = (sort(unique(info$`Program Type`))), multiple = T,
+              #                                 
+              #                                 options = list(`actions-box` = T))),
+              #   
+              #   
+              #   column(width = 4, dateRangeInput("Dates", strong("Report Date:"), 
+              #                                    
+              #                                    start = dates[1], end = dates[2], min = dates[1], max = dates[2])),
+              # ),
+              # 
+              # # Download and update data buttons
+              # fluidRow(
+              #   column(width = 4),
+              #   
+              #   column(width = 2, downloadButton("downBtn", "Download the Data", style = "width:100%;")),
+              #   
+              #   column(width = 2, actionButton("update", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
+              #   
+              #   column(width = 4)
+              # ),
               
               # Data Table readout
               #TODO: adjust height to scale with change in browser viewing window

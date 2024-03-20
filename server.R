@@ -151,7 +151,7 @@ server <- function(input, output) {
   output$reportInformationTable <- renderDataTable(reportInformationTable(info, input))
   
   ### Explorable Data Table: Alleged Violations
-  output$allegedViolationsTable <- renderDataTable(allegedViolationsTable(violations, input))
+  output$allegedViolationsTable <- renderDataTable(allegedViolationsTable(violations, info, input))
   
   ### Explorable Data Table: Applicable Rules
   output$applicableRulesTable <- renderDataTable(applicableRulesTable(info, rules, input))
@@ -175,12 +175,12 @@ server <- function(input, output) {
   
 
   ### Map: Number of Reports
-  ouput$mapReports <- renderLeaflet(
+  output$mapReports <- renderLeaflet(
     mapReports(violations, info, zips)
   )
   
   ### Map: Number of Allegations
-  ouput$mapAllegations <- renderLeaflet(
+  output$mapAllegations <- renderLeaflet(
     mapAllegations(violations, info, zips)
   )
   
