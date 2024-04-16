@@ -1,168 +1,80 @@
-# library(shiny)
-# library(shinydashboard)
-# library(dplyr)
-# library(plotly)
-# library(DT)
-# library(readxl)
-library(pacman)
-
-# p_load(tigris, leaflet, shinydashboard, shiny, plotly, DT, lubridate, bslib,
-#        
-#        shinyWidgets, readxl, openxlsx, tidyverse, update = F)
-
-p_load(tigris, leaflet, flexdashboard, shinydashboard, shiny, plotly, DT, lubridate, bslib,
-       
-       shinyauthr, shinyWidgets, readxl, openxlsx, tidyverse, update = F)
-
-
-########################
-# read in data from excel sheet
-########################
-data_path = "DATA.xlsx"
-info <- read_excel(data_path, "INFORMATION") |>
-  
-  mutate(
-    
-    `Program Type` = case_when(                                                 
-      
-      grepl("CHILD CARING INSTITUTION, GOVERNMENT", `Program Type`) ~ 
-        
-        "CHILD CARING INSTITUTION, GOVERNMENT - NON-FIA",
-      
-      grepl("CHILD CARING INSTITUTION, FIA", `Program Type`) ~ 
-        
-        "CHILD CARING INSTITUTION, FIA",
-      
-      grepl("CHILD CARING INSTITUTION, PRIVATE", `Program Type`) ~ 
-        
-        "CHILD CARING INSTITUTION, PRIVATE",
-      
-      grepl("CHILD PLACING AGENCY, FIA", `Program Type`) ~ 
-        
-        "CHILD PLACING AGENCY, FIA",
-      
-      grepl("CHILD PLACING AGENCY, PRIVATE", `Program Type`) ~ 
-        
-        "CHILD PLACING AGENCY, PRIVATE",
-      
-      grepl("CHILD PLACING AGENCY", `Program Type`) ~ 
-        
-        "CHILD PLACING AGENCY",
-      
-      grepl("CHILD THERAPEUTIC GROUP HOME", `Program Type`) ~ 
-        
-        "CHILD THERAPEUTIC GROUP HOME",
-      
-      grepl("COURT OPERATED RESIDENTIAL CARE, FACILITY", `Program Type`) ~ 
-        
-        "COURT OPERATED RESIDENTIAL CARE FACILITY",
-      
-      grepl("Court operated residential care facility", `Program Type`) ~ 
-        
-        "COURT OPERATED RESIDENTIAL CARE FACILITY",
-      
-      T ~ "OTHER"))    
-
-violations <- read_excel(data_path, "ALLEGATIONS")                 
-
-rules <- read_excel(data_path, "RULES")
-
-zips <- tigris::zctas(starts_with = c('48','49'), cb = T, year = 2020)
-
-dates <- range(info$`Final Report Date`)
-
-#facs <- sort(unique(info$`Facility Name`))
-
-#types <- sort(unique(info$`Program Type`))
-
-########################
-# read in helper functions containing code to make plots
-########################
-source("helpers.R")
-
-
-########################
-# UI
-########################
-# see ui.R
-
-
 ########################
 # server logic
 ########################
+
 server <- function(input, output) {
+  
+  # dates <- reactive({
+  #   range(data$info$`Final Report Date`)
+  # })
+  
   
   ### Value box: Special Investigation Reports
   output$numReports <- renderValueBox({
-    numReports(info)
+    numReports(data$info)
   })
   
   ### Value box: Recent Reports from last 6 months
   output$recentReports <- renderValueBox({
-    recentReports(info)
+    recentReports(data$info)
   })
   
   ### Value box: Allegations
   output$numAllegations <- renderValueBox({
-    numAllegations(violations)
+    numAllegations(data$violations)
   })
   
   ### Value box: Violations Established
   output$numViolations <- renderValueBox({
-    numViolations(violations)
+    numViolations(data$violations)
   })
 
   ### Reports by Year
   output$reportsByYear <- renderPlotly({
-    reportsByYear(info)
+    reportsByYear(data$info)
   })
   
   ### Violations by Year
   output$violationsByYear <- renderPlotly({
-    violationsByYear(violations)
+    violationsByYear(data$violations, data$info)
   })
   
   ### Reports by Facility
   output$reportsByFacility <- renderPlotly({
-    reportsByFacility(info)
+    reportsByFacility(data$info)
   })
   
   ### Violations by Facility
   output$violationsByFacility <- renderPlotly({
-    violationsByFacility(violations)
+    violationsByFacility(data$violations, data$info)
   })
   
   ### Proportion of Allegations with Violation Established
   output$proportionAllegations <- renderPlotly({
-    proportionAllegations(violations)
+    proportionAllegations(data$violations)
   })
   
   ### Number of Allegations per SIR
   output$numAllegationsSIR <- renderPlotly({
-    numAllegationsSIR(violations)
+    numAllegationsSIR(data$violations)
   })
   
   ### SIRs with at least One Violation Established
   output$SIRSwithOneViolation <- renderPlotly({
-    SIRSwithOneViolation(violations)
+    SIRSwithOneViolation(data$violations)
   })
   
   ### Explorable Data Table: Report Information
-  output$reportInformationTable <- renderDataTable(reportInformationTable(info, input))
+  output$reportInformationTable <- renderDataTable(reportInformationTable(data$info, input))
   
   ### Explorable Data Table: Alleged Violations
-  output$allegedViolationsTable <- renderDataTable(allegedViolationsTable(violations, info, input))
+  output$allegedViolationsTable <- renderDataTable(allegedViolationsTable(data$violations, data$info, input))
   
   ### Explorable Data Table: Applicable Rules
-  output$applicableRulesTable <- renderDataTable(applicableRulesTable(info, rules, input))
-  
-  # ### Download data button
-  # output$downloadUI <- renderUI({
-  #   downloadButton("downBtn", "Download the Data", style = "width:100%;")
-  # })
+  output$applicableRulesTable <- renderDataTable(applicableRulesTable(data$info, data$rules, input))
   
   ### Download data
-  output$downBtn <- downloadHandler(
+  output$downBtn <- output$downBtn2 <- output$downBtn3 <- downloadHandler(
     
     filename = function() { "DATA.xlsx" },
     
@@ -173,20 +85,47 @@ server <- function(input, output) {
       write.xlsx(l, file) }
   )
   
+  ### Update data
 
+  ### When the update button is selected, run the PDF scraping and reformatting code
+  ### TODO: then update the data (and all reactive plots/values) by reading in the new/updated excel file
+  
+  # data<- eventReactive(input$update, {
+  #   print("Updating Data")
+  #   
+  #   updateData(data_path)
+  # 
+  # })
+  
+  observeEvent(input$update, {
+    print("Updating Data")
+    updateData(data_path)
+  })
+  
+  observeEvent(input$update2, {
+    print("Updating Data")
+    updateData(data_path)
+  })
+  
+  observeEvent(input$update3, {
+    print("Updating Data")
+    updateData(data_path)
+  })
+  
+  
   ### Map: Number of Reports
   output$mapReports <- renderLeaflet(
-    mapReports(violations, info, zips)
+    mapReports(data$violations, data$info, zips)
   )
   
   ### Map: Number of Allegations
   output$mapAllegations <- renderLeaflet(
-    mapAllegations(violations, info, zips)
+    mapAllegations(data$violations, data$info, zips)
   )
   
   ### Map: Number of Violations
   output$mapViolations <- renderLeaflet(
-    mapViolations(violations, info, zips)
+    mapViolations(data$violations, data$info, zips)
   )
 
 }

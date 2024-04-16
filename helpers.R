@@ -152,7 +152,7 @@ reportsByYear <- function(info) {
 
 
 ### Violations by Year
-violationsByYear <- function(violations) {
+violationsByYear <- function(violations, info) {
   p <- violations |>
     
     left_join(
@@ -279,7 +279,7 @@ reportsByFacility <- function(info) {
 
 
 ### Violations by Facility
-violationsByFacility <- function(violations) {
+violationsByFacility <- function(violations, info) {
   p <- violations |>
     
     left_join(
@@ -512,13 +512,13 @@ allegedViolationsTable <- function(violations, info, input) {
       
       filter(
         
-        `Facility Name` %in% input$Facility,
+        `Facility Name` %in% input$Facility2,
         
-        `Program Type` %in% input$Program,
+        `Program Type` %in% input$Program2,
         
         `Final Report Date` %within%
           
-          interval(ymd(input$Dates[1]), ymd(input$Dates[2])))
+          interval(ymd(input$Dates2[1]), ymd(input$Dates2[2])))
     
     return(datatable(data, filter = 'top', 
               
@@ -545,13 +545,13 @@ applicableRulesTable <- function(info, rules, input) {
       
       filter(
         
-        `Facility Name` %in% input$Facility,
+        `Facility Name` %in% input$Facility3,
         
-        `Program Type` %in% input$Program,
+        `Program Type` %in% input$Program3,
         
         `Final Report Date` %within%
           
-          interval(ymd(input$Dates[1]), ymd(input$Dates[2])))
+          interval(ymd(input$Dates3[1]), ymd(input$Dates3[2])))
     
     return(datatable(data, filter = 'top', 
               
@@ -739,5 +739,19 @@ mapViolations <- function(violations, info, zips) {
 }
 
 
+### Update Data table
+updateData <- function(data_path) {
+  
+  #call code to run PDF scraping
+  print("Gathering new PDFs")
+  
+  #call code to run PDF to excel sheet formatting
+  print(paste0("Updating information in ", data_path))
+  
+  #re-read in data
+  #updated_data = readData(data_path)
 
-
+  
+  # return(updated_data)
+  
+}
