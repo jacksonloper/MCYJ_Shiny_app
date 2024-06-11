@@ -99,61 +99,31 @@ numViolations <- function(violations) {
 
 ### Reports by Year
 reportsByYear <- function(info) {
-  p <- info |>                                                                  
+  df <- info |>                                                                  
     
-    mutate(year = year(`Final Report Date`)) |>
+    mutate(year = year(`Final Report Date`)) |> 
     
-    group_by(year) |>
+    select(year)
     
-    count() |>
+  p <- ggplot(df, aes(year)) +
     
-    plot_ly(x = ~n, y = ~year, type = "bar", orientation = "h", 
-            
-            textposition = "auto", color = I("#489CC9")) |>
+    geom_bar(fill = '#489CC9') +
     
-    layout(
-      
-      margin = list(l = 200, r = 50, b = 100, t = 100, pad = 20),
-      
-      title = list(
-        
-        text = 'Number of Special Investigation Reports by Year', 
-        
-        xanchor = 'Left'),
-      
-      #plot_bgcolor = "#e5ecf6", 
-      
-      xaxis = list(
-        
-        title = "",
-        
-        tickfont = list(size = 20)), 
-      
-      yaxis = list(
-        
-        title = "",
-        
-        tickfont = list(size = 20),
-        
-        categoryorder = "total ascending"),
-      
-      annotations = list(
-        
-        x = 1, y = 0.1, text = "Note: Data were available for facilities open\n and operating as of August 2022. Lower\n report freqencies in 2017-2020 are not\n necessarily indicative of the true number\n of violations across all facilities.", 
-        
-        showarrow = F, xref='paper', yref='paper', 
-        
-        xanchor='right', yanchor='auto', xshift=0, yshift=0,
-        
-        font=list(size=15, color="#489CC9")))
+    labs(title = '\nNumber of Special Investigation Reports by Year',
+         x = 'Year',
+         y = '')+
+    
+    theme_minimal() +
+    
+    coord_flip()
   
-  return(p)
+  return(ggplotly(p))
 }
 
 
 ### Violations by Year
 violationsByYear <- function(violations, info) {
-  p <- violations |>
+  df <- violations |>
     
     left_join(
       
@@ -167,120 +137,66 @@ violationsByYear <- function(violations, info) {
     
     mutate(year = year(`Final Report Date`)) |>
     
-    group_by(year, `Violation Established`) |>
-    
-    count() |>
-    
     filter(`Violation Established` %in% c("Yes", "No")) |>
     
-    pivot_wider(id_cols = year, 
-                
-                names_from = `Violation Established`, values_from = n) |>
+    group_by(year, `Violation Established`) |>
     
-    plot_ly(x = ~Yes, y = ~year, type = "bar", orientation = "h", 
-            
-            name = "Established", textposition = "auto", color = I("#dc720a")) |>
+    count()
+
+  p <- ggplot(df, aes(year, n, fill = `Violation Established`)) +
     
-    add_trace(x = ~No, name = 'Not Established', orientation = "h", 
-              
-              color = I("#489CC9")) |>
+    geom_bar(position="stack", stat="identity") + 
     
-    layout(
-      
-      barmode = 'stack',
-      
-      margin = list(l = 200, r = 50, b = 100, t = 100, pad = 20),
-      
-      title = list(
-        
-        text = 'Number of Alleged Violations by Year', 
-        
-        xanchor = 'Left'),
-      
-      #plot_bgcolor = "#e5ecf6", 
-      
-      xaxis = list(
-        
-        title = "",
-        
-        tickfont = list(size = 20)), 
-      
-      yaxis = list(
-        
-        title = "",
-        
-        tickfont = list(size = 20),
-        
-        categoryorder = "total ascending"),
-      
-      annotations = list(
-        
-        x = 1, y = 0.1, text = "Note: Data were available for facilities open\n and operating as of August 2022. Lower\n report freqencies in 2017-2020 are not\n necessarily indicative of the true number\n of violations across all facilities.", 
-        
-        showarrow = F, xref='paper', yref='paper', 
-        
-        xanchor='right', yanchor='auto', xshift=0, yshift=0,
-        
-        font=list(size=15, color="#489CC9")))
+    theme_minimal() +
     
-  return(p)
+    theme(legend.position = 'bottom') +
+    
+    scale_fill_manual(values = c('No' = '#469d6d', 'Yes' = '#fc7530')) +
+    
+    labs(title = '\nNumber of Alleged Violations by Year',
+         x = 'Year',
+         y = '') +
+  
+    coord_flip()
+  
+  
+     return(ggplotly(p) %>% layout(legend = list(orientation = "h")))
 }
   
 
 ### Reports by Facility
 reportsByFacility <- function(info) {
-  p <- info |>
+  df <- info |>
     
     group_by(`Facility Name`) |>
     
-    count() |>
+    count() |> 
     
-    plot_ly(x = ~n, y = ~`Facility Name`, type = "bar", orientation = "h", 
-            
-            textposition = "auto", color = I("#dc720a")) |>
+    arrange(desc(n)) |>
     
-    layout(
-      
-      margin = list(l = 200, r = 50, b = 100, t = 100, pad = 20),
-      
-      title = list(
-        
-        text = 'Number of Special Investigation Reports by Facility', 
-        
-        xanchor = 'Left'),
-      
-      #plot_bgcolor = "#e5ecf6", 
-      
-      xaxis = list(
-        
-        title = "",
-        
-        tickfont = list(size = 20)), 
-      
-      yaxis = list(
-        
-        title = "",
-        
-        tickfont = list(size = 20),
-        
-        categoryorder = "total ascending"),
-      
-      annotations = list(
-        
-        x = 1, y = 0.1, text = "Note: Data were available for facilities open\n and operating as of August 2022. Lower\n report freqencies in 2017-2020 are not\n necessarily indicative of the true number\n of violations across all facilities.", 
-        
-        showarrow = F, xref='paper', yref='paper', 
-        
-        xanchor='right', yanchor='auto', xshift=0, yshift=0,
-        
-        font=list(size=15, color="#dc720a")))
-  return(p)
+    head(10)
+  
+  p <- ggplot(df, aes(x = reorder(`Facility Name`, n), y = n)) +
+    
+    geom_bar(stat = 'identity', fill = '#5c3464') +
+    
+    theme_minimal() + 
+    
+    theme() + 
+    
+    labs(title = '\nTop 10 Facilities with Most Special Investigation Reports',
+         x = '',
+         y = 'Number of Special Investigation Reports') +
+    
+    coord_flip()
+    
+  return(ggplotly(p))
 }
 
 
 ### Violations by Facility
 violationsByFacility <- function(violations, info) {
-  p <- violations |>
+  df <- violations |>
     
     left_join(
       
@@ -294,177 +210,202 @@ violationsByFacility <- function(violations, info) {
     
     select(`Facility Name`, `Violation Established`, `Capacity`) |>
     
+    filter(`Violation Established` %in% c("Yes", "No")) |>
+    
     group_by(`Facility Name`, `Violation Established`) |>
     
     summarize(rate = n() / mean(Capacity, na.rm = T)) |>
     
-    filter(`Violation Established` %in% c("Yes", "No")) |>
+    ungroup() |>
     
-    pivot_wider(id_cols = `Facility Name`, 
-                
-                names_from = `Violation Established`, values_from = rate) |>
+    filter(rate != 'NaN') |>
     
-    plot_ly(x = ~Yes, y = ~`Facility Name`, type = "bar", orientation = "h", 
-            
-            name = "Established", textposition = "auto", color = I("#dc720a")) |>
+    group_by(`Facility Name`) |>
     
-    add_trace(x = ~No, name = 'Not Established', orientation = "h", 
-              
-              color = I("#489CC9")) |>
+    mutate(rate = round(rate, 2), 
+           rate_t = sum(rate)) |>
     
-    layout(
-      
-      barmode = 'stack',
-      
-      margin = list(l = 200, r = 50, b = 100, t = 100, pad = 20),
-      
-      title = list(
-        
-        text = 'Rates of Alleged Violations by Facility\nfor Facilities with Known Capacity', 
-        
-        xanchor = 'Left'),
-      
-      #plot_bgcolor = "#e5ecf6", 
-      
-      xaxis = list(
-        
-        title = "",
-        
-        tickfont = list(size = 20)), 
-      
-      yaxis = list(
-        
-        title = "",
-        
-        tickfont = list(size = 20),
-        
-        categoryorder = "total ascending"),
-      
-      annotations = list(
-        
-        x = 1, y = 0.1, text = "Note: Data were available for facilities open\n and operating as of August 2022. Lower\n report freqencies in 2017-2020 are not\n necessarily indicative of the true number\n of violations across all facilities.", 
-        
-        showarrow = F, xref='paper', yref='paper', 
-        
-        xanchor='right', yanchor='auto', xshift=0, yshift=0,
-        
-        font=list(size=15, color="#489CC9")))
+    arrange(desc(rate_t)) 
   
-  return(p)
+  p <- ggplot(df |> filter(`Facility Name` %in% unique(df$`Facility Name`)[1:10]), 
+              aes(x = reorder(`Facility Name`, rate_t), y = rate, 
+                  fill = `Violation Established`, 
+                  text = paste0(`Facility Name`,'\n',
+                               ifelse(`Violation Established` == 'Yes', 
+                                      'Established Violation Rate:', 
+                                      'Not Established Violation Rate:'), rate, sep = ''))) + 
+    
+    geom_bar(position="stack", stat="identity") + 
+    
+    theme_minimal() +
+    
+    theme(legend.position = 'bottom') +
+    
+    labs(title = '\nTop 10 Facilities with Highest Rates of Alleged Violations',
+         x = '',
+         y = '') +
+    
+    scale_fill_manual(values = c('No' = '#469d6d', 'Yes' = '#fc7530')) +
+    
+    coord_flip()
+  
+  
+return(ggplotly(p, tooltip = 'text') %>% 
+         layout(legend = list(orientation = "h"), 
+                margin = list(l = 50, r = 50, b = 100, t = 50),
+                annotations = list(x = 1, y = -0.2, text = "Rate = Number of Alleged Violations / Facilitiy Capacity",
+                                   xref='paper', yref='paper', showarrow = F, 
+                                   xanchor='right', yanchor='auto', xshift=0, yshift=0,
+                                   font = list(size = 14))))
 }
 
 
 ### Proportion of Allegations with Violation Established
-proportionAllegations <- function(violations) {
-  p <- violations |>
+proportionAllegations <- function(violations, info) {
+  df <- violations |>
+    
+    left_join(
+      
+      select(info, 
+             
+             `File Name`, `Facility Name`, `Program Type`, `Final Report Date`),
+      
+      "File Name") |>
+    
+    select(`Facility Name`, `Program Type`, `Final Report Date`, everything()) |>
     
     mutate(
       
       `Violation Established` = if_else(
         
-        `Violation Established` == "Yes", "Yes", "No", "No")) |>
+        `Violation Established` == "Yes", "Yes", "No", "No"), 
+      
+      year = year(`Final Report Date`)) |>
     
-    group_by(`Violation Established`) |> count() |>
+    group_by(`Violation Established`, year) |> count() |>
     
-    plot_ly(labels = ~`Violation Established`, values = ~n) |>
-    
-    add_pie(hole = 0.6, ) |>
-    
-    layout(
-      
-      title = list(text = "Proportion of Allegations with Violation Established", font = list(size = 16)), 
-      
-      showlegend = F, 
-      
-      font = list(size = 20),
-      
-      xaxis = list(showgrid = F, zeroline = F, showticklabels = F),
-      
-      yaxis = list(showgrid = F, zeroline = F, showticklabels = F))
+    group_by(year) |> mutate(proportion = round(n/sum(n), 2))
   
-  return(p)
+  p <- ggplot(df, aes(x = year, y = proportion, fill = `Violation Established`)) +
+    
+    geom_area() +
+    
+    geom_point(aes(text = paste(proportion*100, ifelse(`Violation Established` == 'Yes',
+                                                       '% of allegations ended up with establised violation in ',
+                                                       '% of allegations ended up without establised violation in '), year, sep = '')), 
+               position="stack") +
+    
+    theme_minimal() + 
+    
+    theme(legend.position = 'bottom') +
+    
+    scale_fill_manual(values = c('No' = '#469d6d', 'Yes' = '#fc7530')) +
+    
+    labs(title = "\nProportion of Allegations with Violation Established by Year",
+         x = "",
+         y = "")
+  
+  return(ggplotly(p, tooltip = 'text') %>% layout(legend = list(orientation = "h")))
 }
 
 
 ### Number of Allegations per SIR
 numAllegationsSIR <- function(violations) {
-  p <- violations |>
+  df <- violations |>
     
     group_by(`File Name`) |> count() |>
     
     rename(n_allegations = n) |>
     
-    group_by(n_allegations) |> count() |>
-    
-    plot_ly(x = ~n, y = ~`n_allegations`, type = "bar", orientation = "h", 
-            
-            textposition = "auto", color = I("#dc720a")) |>
-    
-    layout(
-      
-      margin = list(l = 200, r = 50, b = 100, t = 100, pad = 20),
-      
-      xaxis = list(
-        
-        title = "\nNumber of Reports",
-        
-        titlefont = list(size = 24),
-        
-        tickfont = list(size = 20)), 
-      
-      yaxis = list(
-        
-        title = list(text = "Number of Allegations per SIR", standoff = 40L),
-        
-        titlefont = list(size = 24),
-        
-        tickfont = list(size = 20),
-        
-        categoryorder = "total descending"))
+    group_by(n_allegations) |> count() 
   
-  return(p)
+  p <- ggplot(df, aes(x = n_allegations, y = n)) +
+    
+    geom_bar(stat = 'identity', fill = '#93b4cd',
+             aes(text = paste('There are ',n, ' SIRs yielded in ',n_allegations, ' allegations per SIR', sep = ''))) +
+    
+    theme_minimal() + 
+    
+    theme() + 
+    
+    labs(title = '\nNumber of Allegations per Special Investigation Reports (SIR)',
+         x = 'Number of Allegations per SIR',
+         y = 'Number of SIR') #+
+    
+    #coord_flip()
+  
+  ggplotly(p, tooltip = 'text') %>% layout(legend = list(orientation = "h"))
+  
+  return(ggplotly(p, tooltip = 'text') %>% layout(legend = list(orientation = "h")))
 }
 
-
 ### SIRs with at least One Violation Established
-SIRSwithOneViolation <- function(violations) {
-  p <- violations |>
+SIRSwithOneViolation <- function(violations, info) {
+  df <- violations |>
+    
+    left_join(
+      
+      select(info, 
+             
+             `File Name`, `Facility Name`, `Program Type`, `Final Report Date`),
+      
+      "File Name") |>
+    
+    select(`Facility Name`, `Program Type`, `Final Report Date`, everything()) |>
     
     mutate(
       
       `Violation Established` = if_else(
         
-        `Violation Established` == "Yes", T, F, F)) |>
+        `Violation Established` == "Yes", T, F, F),
+      
+      year = year(`Final Report Date`)) |>
     
-    group_by(`File Name`) |>
+    group_by(`File Name`, year) |>
     
     summarise(Violation = any(`Violation Established`)) |>
     
-    group_by(Violation) |> count() |>
+    ungroup()|>
+    
+    group_by(Violation, year) |> count() |>
     
     mutate(Violation = if_else(
       
       Violation, "At Least 1 Violation", "No Violations")) |>
     
-    plot_ly(labels = ~Violation, values = ~n) |>
-    
-    add_pie(hole = 0.6) |>
-    
-    layout(
-      
-      title = list(text = "SIRs with at least One Violation Established", font = list(size = 16)), 
-      
-      showlegend = F, 
-      
-      font = list(size = 20),
-      
-      xaxis = list(showgrid = F, zeroline = F, showticklabels = F),
-      
-      yaxis = list(showgrid = F, zeroline = F, showticklabels = F))
+    group_by(year) |> mutate(proportion = round(n/sum(n), 2))
   
-  return(p)
+  
+  p <- ggplot(df %>% left_join(data.frame(year = rep(2017:max(df$year), each =2), 
+                                          Violation = rep(unique(df$Violation), max(df$year)-2016),
+                                          n = rep(0, (max(df$year)-2016)*2), 
+                                          proportion = rep(0, (max(df$year)-2016)*2)), .,
+                               by = c('year', 'Violation')) %>% 
+                mutate(n.y =ifelse(is.na(n.y), n.x, n.y),
+                       proportion.y =ifelse(is.na(proportion.y), proportion.x, proportion.y), 
+                       Violation = factor(Violation, levels = c('No Violations', 'At Least 1 Violation'))), 
+              aes(x = year, y = proportion.y, fill = Violation)) +
+    
+    geom_area() +
+    
+    geom_point(aes(text = paste(proportion.y*100, ifelse(Violation == 'No Violations',
+                                                         '% of SIRs ended up with no violations in ',
+                                                         '% of SIRs ended up with at least 1 violations in '), year, sep = '')), 
+               position="stack") +
+    
+    theme_minimal() + 
+    
+    theme(legend.position = 'bottom') +
+    
+    scale_fill_manual(values = c('At Least 1 Violation' = '#a885a8', 'No Violations' = '#93b4cd')) +
+    
+    labs(title = "\nProportion of SIRs with at least One Violation Established",
+         x = "",
+         y = "")
+  
+  
+  return(ggplotly(p, tooltip = 'text') %>% layout(legend = list(orientation = "h")))
 }
-
 
 ### Create Explorable Data Table
 ### Report Information

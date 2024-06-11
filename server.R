@@ -51,7 +51,7 @@ server <- function(input, output) {
   
   ### Proportion of Allegations with Violation Established
   output$proportionAllegations <- renderPlotly({
-    proportionAllegations(data$violations)
+    proportionAllegations(data$violations, data$info)
   })
   
   ### Number of Allegations per SIR
@@ -61,7 +61,7 @@ server <- function(input, output) {
   
   ### SIRs with at least One Violation Established
   output$SIRSwithOneViolation <- renderPlotly({
-    SIRSwithOneViolation(data$violations)
+    SIRSwithOneViolation(data$violations, data$info)
   })
   
   ### Explorable Data Table: Report Information

@@ -49,6 +49,10 @@ body <- dashboardBody(
               valueBoxOutput("numViolations", width = 3)
             ),
             fluidRow(
+              box(width = 12, solidHeader = TRUE, status = "primary",
+                  "Note: Data were available for facilities open and operating as of August 2022. Lower report freqencies in 2017-2020 are not necessarily indicative of the true number of violations across all facilities.")
+            ),
+            fluidRow(
               box(plotlyOutput("reportsByYear"), width = 6),
               box(plotlyOutput("violationsByYear"), width = 6)
             ),
@@ -56,14 +60,14 @@ body <- dashboardBody(
               box(plotlyOutput("reportsByFacility"), width = 12)
             ),
             fluidRow(
-              box(plotlyOutput("violationsByFacility"), width = 12)
+              box(plotlyOutput("violationsByFacility"), width = 12, height = 400)
             ),
             fluidRow(
               box(plotlyOutput("proportionAllegations"), width = 6),
               box(plotlyOutput("SIRSwithOneViolation"), width = 6)
             ),
             fluidRow(
-              box(plotlyOutput("numAllegationsSIR"), width = 12)
+              box(plotlyOutput("numAllegationsSIR"), width = 12, height = 500)
             )
             
     ),
@@ -113,7 +117,8 @@ body <- dashboardBody(
                 
                 column(width = 2, downloadButton("downBtn", "Download the Data", style = "width:100%;")),
 
-                column(width = 2, actionButton("update", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
+                column(width = 2, actionButton("update", "Update the Data", icon = icon("refresh"), 
+                                               style = "width:100%;")),
                 
                 column(width = 4)
               ),
