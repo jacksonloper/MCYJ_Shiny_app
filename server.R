@@ -34,20 +34,45 @@ server <- function(input, output) {
     reportsByYear(data$info)
   })
   
-  ### Violations by Year
-  output$violationsByYear <- renderPlotly({
-    violationsByYear(data$violations, data$info)
+  ### Violations by Year - Overall
+  output$violationsByYearOverall <- renderPlotly({
+    violationsByYearOverall(data$violations, data$info)
+  })
+
+  ### Violations by Year - Established
+  output$violationsByYearEst <- renderPlotly({
+    violationsByYearEst(data$violations, data$info)
+  })
+
+  ### Violations by Year - Not-Established
+  output$violationsByYearNEst <- renderPlotly({
+    violationsByYearNEst(data$violations, data$info)
   })
   
   ### Reports by Facility
   output$reportsByFacility <- renderPlotly({
+    data$info <- data$info[year(data$info$`Final Report Date`)>=input$rangeSIR[1] & year(data$info$`Final Report Date`)<=input$rangeSIR[2],]
     reportsByFacility(data$info)
   })
   
-  ### Violations by Facility
-  output$violationsByFacility <- renderPlotly({
-    violationsByFacility(data$violations, data$info)
+  ### Violations by Facility - Overall
+  output$violationsByFacilityOverall <- renderPlotly({
+    data$info <- data$info[year(data$info$`Final Report Date`)>=input$rangeViolation[1] & year(data$info$`Final Report Date`)<=input$rangeViolation[2],]
+    violationsByFacilityOverall(data$violations, data$info)
   })
+
+  ### Violations by Facility - Established
+  output$violationsByFacilityEst <- renderPlotly({
+    data$info <- data$info[year(data$info$`Final Report Date`)>=input$rangeViolation[1] & year(data$info$`Final Report Date`)<=input$rangeViolation[2],]
+    violationsByFacilityEst(data$violations, data$info)
+  })
+  
+  ### Violations by Facility - Not Established
+  output$violationsByFacilityNEst <- renderPlotly({
+    data$info <- data$info[year(data$info$`Final Report Date`)>=input$rangeViolation[1] & year(data$info$`Final Report Date`)<=input$rangeViolation[2],]
+    violationsByFacilityNEst(data$violations, data$info)
+  })
+  
   
   ### Proportion of Allegations with Violation Established
   output$proportionAllegations <- renderPlotly({

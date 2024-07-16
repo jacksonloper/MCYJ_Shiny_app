@@ -36,7 +36,6 @@ body <- dashboardBody(
   tags$style(".small-box.bg-purple { background-color: #5C3566 !important; color: #FFFFFF !important; }"),
   tags$style(".small-box.bg-red { background-color: #fc7530 !important; color: #FFFFFF !important; }"),
   tags$style(".small-box.bg-green { background-color: #469D6D !important; color: #FFFFFF !important; }"),
-
   tabItems(
     # Overview dashboard tab content
     tabItem(tabName = "dashboard",
@@ -53,21 +52,48 @@ body <- dashboardBody(
                   "Note: Data were available for facilities open and operating as of August 2022. Lower report freqencies in 2017-2020 are not necessarily indicative of the true number of violations across all facilities.")
             ),
             fluidRow(
-              box(plotlyOutput("reportsByYear"), width = 6),
-              box(plotlyOutput("violationsByYear"), width = 6)
+              box(title = 'Number of Special Investigation Reports by Year',
+                  plotlyOutput("reportsByYear"), width = 12)
             ),
             fluidRow(
-              box(plotlyOutput("reportsByFacility"), width = 12)
+              box(width = 12, title = 'Number of Alleged Violations by Year',
+                  tabsetPanel(
+                    tabPanel('Overall', plotlyOutput("violationsByYearOverall")),
+                    tabPanel('Violation Established', plotlyOutput("violationsByYearEst")),
+                    tabPanel('Violaton Not Established', plotlyOutput("violationsByYearNEst"))
+                  ))
             ),
             fluidRow(
-              box(plotlyOutput("violationsByFacility"), width = 12, height = 400)
+              box(width = 12, title = 'Top 10 Facilities with Most Special Investigation Reports (SIRs)',
+                  plotlyOutput("reportsByFacility"),
+                  sliderInput("rangeSIR", "Select the year range to count the number of SIRs",
+                              min(year(data$info$`Final Report Date`)), 
+                              max(year(data$info$`Final Report Date`)), 
+                              value = c(2017, max(year(data$info$`Final Report Date`))),sep = " ")
+              )
             ),
             fluidRow(
-              box(plotlyOutput("proportionAllegations"), width = 6),
-              box(plotlyOutput("SIRSwithOneViolation"), width = 6)
+              box(width = 12, title = 'Top 10 Facilities with Highest Rates of Alleged Violations',
+                  tabsetPanel(
+                    tabPanel('Overall', plotlyOutput("violationsByFacilityOverall")),
+                    tabPanel('Violation Established', plotlyOutput("violationsByFacilityEst")),
+                    tabPanel('Violaton Not Established', plotlyOutput("violationsByFacilityNEst"))
+                  ),
+                  'Rate = Number of Alleged Violations / Facilitiy Capacity',
+                  sliderInput("rangeViolation", "Select the year range to calculate the rate",
+                              min(year(data$info$`Final Report Date`)), 
+                              max(year(data$info$`Final Report Date`)), 
+                              value = c(2017, max(year(data$info$`Final Report Date`))),sep = " "))
             ),
             fluidRow(
-              box(plotlyOutput("numAllegationsSIR"), width = 12, height = 500)
+              box(width = 6, title = 'Proportion of Allegations with Violation Established by Year',
+                  plotlyOutput("proportionAllegations")),
+              box(width = 6, title = 'Proportion of SIRs with at least One Violation Established by Year',
+                  plotlyOutput("SIRSwithOneViolation"))
+            ),
+            fluidRow(
+              box(width = 12, title = 'Number of Allegations per Special Investigation Report (SIR)',
+                  plotlyOutput("numAllegationsSIR"))
             )
             
     ),
