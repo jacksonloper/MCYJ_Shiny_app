@@ -3,7 +3,7 @@ library(pacman)
 
 p_load(tigris, leaflet, flexdashboard, shinydashboard, shiny, plotly, DT, lubridate, bslib,
        
-       shinyauthr, shinyWidgets, readxl, openxlsx, tidyverse, dplyr, update = F)
+       shinyauthr, shinyWidgets, readxl, openxlsx, tidyverse, dplyr, sf, update = F)
 
 
 ########################
@@ -64,7 +64,8 @@ readData <- function(data_path) {
 
 data <- readData(data_path)
 
-zips <- tigris::zctas(starts_with = c('48','49'), cb = T, year = 2020)
+zips_2020 <- st_read("cb_2020_us_zcta520_500k/cb_2020_us_zcta520_500k.shp")
+zips <- subset(zips_2020, grepl("^48|^49", ZCTA5CE20))
 
 dates<- range(data$info$`Final Report Date`)
 
