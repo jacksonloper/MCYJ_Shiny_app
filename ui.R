@@ -94,6 +94,20 @@ body <- dashboardBody(
             fluidRow(
               box(width = 12, title = 'Number of Allegations per Special Investigation Report (SIR)',
                   plotlyOutput("numAllegationsSIR"))
+            ),
+            fluidRow(
+              box(width = 12, title = 'Top 10 Rule Codes',
+                  plotlyOutput("reportsByRulecode"),
+                  sliderInput("rangeRuleCode", "Select the year range to count the number of Rule Codes",
+                              min(year(data$info$`Final Report Date`)), 
+                              max(year(data$info$`Final Report Date`)), 
+                              value = c(2017, max(year(data$info$`Final Report Date`))),sep = " ")
+                )
+              ),
+            # Methodology explanation text box at the bottom
+            fluidRow(
+              box(width = 12, title = "Methodology",
+                  "Add explanation here")
             )
             
     ),
@@ -280,8 +294,22 @@ body <- dashboardBody(
             
             fluidRow(
               box(leafletOutput("mapViolations"), width = 12)
-            )
-    ),
+            ),
+            
+            fluidRow(
+              box(width = 9, 
+                  leafletOutput("mapProgramType"),
+                  sliderInput("rangeYear", "Select the year range",
+                           min = 2015, max = 2025, value = c(2015, 2025), sep = " ")
+                  ),
+                box(
+                # External legend UI output
+                uiOutput("externalLegend"),
+                width = 3
+              )
+             )
+
+            ),
     
     # About tab content
     tabItem(tabName = "about",

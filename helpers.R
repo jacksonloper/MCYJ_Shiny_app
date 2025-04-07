@@ -2,7 +2,8 @@
 library(dplyr)
 library(plotly)
 library(DT)
-
+library(zipcodeR)
+library(viridis)
 
 ### Value box: Special Investigation Reports
 numReports <- function(info) {
@@ -855,8 +856,92 @@ updateData <- function(data_path) {
   
   #re-read in data
   #updated_data = readData(data_path)
-
+  
   
   # return(updated_data)
   
+}
+
+# Rule Code Histogram Function -----------------------------------------------
+reportsByRulecode <- function(rules,info) {
+  df <- rules |>
+    
+    inner_join(
+      
+      select(info, 
+             
+             `File Name`, `Final Report Date`),
+      
+      "File Name") |>
+    
+    select(`File Name`, `Rule`, `Final Report Date`) |>
+    
+    group_by(`Rule`) |>
+    
+    count() |> 
+    
+    filter(!is.na(Rule)) |>
+    
+    arrange(desc(n)) |>
+    
+    head(10)
+  
+  p <- ggplot(df, aes(x = reorder(`Rule`, n), y = n,
+                      text = paste0(`Rule`,'\nNumber of Rule Codes:', n, sep = ' '))) +
+    
+    geom_bar(stat = 'identity', fill = '#0091c1') + #5c3464
+    
+    theme_minimal() + 
+    
+    theme() + 
+    
+    labs(#title = '\nTop 10 Facilities with Most Special Investigation Reports (SIR)',
+      x = '',
+      y = 'Number of Rule Codes') + coord_flip()
+  
+  return(ggplotly(p, tooltip = 'text'))
+  
+}
+
+# Map Function ---------------------------------------------------------------
+mapProgramType <- function(data) {
+  # Process data to extract zip codes
+  dat <- data %>%
+    mutate(zip = str_sub(`Facility Address`, -5, -1)) %>%
+    filter(zip > 0)
+  
+  dat_sum <- dat %>%
+    select(`Facility Name`, zip, `Program Type`, `Effective Date`, `Expiration Date`)
+  
+  # Get latitude and longitude for each zip
+  df_points <- zipcodeR::geocode_zip(dat_sum$zip) %>% rename(zip = zipcode)
+  
+  # Merge the coordinates into the dataset
+  plt_dat2 <- left_join(dat_sum, df_points, by = "zip")
+  
+  # Create popup text for each marker
+  popup_dat <- paste0("Facility Name: \n", plt_dat2$`Facility Name`, "<br>",
+                      "Program Type: \n", plt_dat2$`Program Type`, "<br>",
+                      "Effective Date: \n", plt_dat2$`Effective Date`, "<br>",
+                      "Expiration Date: \n", plt_dat2$`Expiration Date`)
+  
+  # Define color palette based on Program Type using viridis
+  program_colors <- colorFactor(
+    palette = viridis(8),
+    domain = plt_dat2$`Program Type`
+  )
+  
+  leaflet() %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    setView(-84.506836, 44.182205, zoom = 6) %>%
+    addCircleMarkers(
+      data = plt_dat2,
+      lng = ~lng,
+      lat = ~lat,
+      color = ~program_colors(`Program Type`),
+      fillColor = ~program_colors(`Program Type`),
+      fillOpacity = 0.8,
+      radius = 6,
+      popup = ~popup_dat
+    )
 }

@@ -89,6 +89,13 @@ server <- function(input, output) {
     SIRSwithOneViolation(data$violations, data$info)
   })
   
+  
+  ### Histogram by rulecode 
+  output$reportsByRulecode <- renderPlotly({
+    data$info <- data$info[year(data$info$`Final Report Date`)>=input$rangeRuleCode[1] & year(data$info$`Final Report Date`)<=input$rangeRuleCode[2],]
+    reportsByRulecode(data$rules, data$info)
+  })
+  
   ### Explorable Data Table: Report Information
   output$reportInformationTable <- renderDataTable(reportInformationTable(data$info, input))
   
@@ -152,6 +159,41 @@ server <- function(input, output) {
   output$mapViolations <- renderLeaflet(
     mapViolations(data$violations, data$info, zips)
   )
+  
+  ### Map: Program Type
+  output$mapProgramType <- renderLeaflet({
+    # Filter the data based on the slider's year range
+    filtered_data <- data$info %>%
+      filter(year(`Effective Date`) <= input$rangeYear[2] &
+               year(`Expiration Date`) >= input$rangeYear[1])
+    mapProgramType(filtered_data)
+  })
+  
+  ### Legend: Program Type
+  output$externalLegend <- renderUI({
+    # Use the full dataset (or you can use filtered_data if desired)
+    progTypes <- sort(unique(data$info$`Program Type`))
+    program_colors <- colorFactor(viridis(8), domain = progTypes)
+    
+    # Create a simple legend: colored box + label for each Program Type
+    legendItems <- lapply(progTypes, function(pt) {
+      div(
+        style = "display: flex; align-items: center; margin-bottom: 4px;",
+        div(
+          style = sprintf("width: 20px; height: 20px; background-color: %s; margin-right: 5px;",
+                          program_colors(pt))
+        ),
+        span(pt)
+      )
+    })
+    
+    tagList(
+      h4("Program Type"),
+      do.call(tagList, legendItems)
+    )
+    
+    
+  })
 
 }
 
