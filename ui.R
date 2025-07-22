@@ -380,9 +380,11 @@ body <- dashboardBody(
                              
             card(full_screen = T, height = 650,
                                   
-            card_image(file = "./images/mcyj_about.jpeg", href = "https://www.miyouthjustice.org/our-mission-values", height = 350),
+            card_image(file = "./images/mcyj_about.jpeg", href = "https://www.miyouthjustice.org/our-mission-values",
+                       style = "max-height: 350px; width: auto; object-fit: contain; display: block; margin-left: auto; margin-right: auto;"),
                                   
-            card_body(markdown("The Michigan Center for Youth Justice (MCYJ) is a non-profit organization dedicated to advancing policies and practices that reduce confinement and support trauma-informed, racially equitable, socio-economically and culturally responsive, community-based solutions for Michigan's justice-involved children, youth and young adults. 
+            card_body(div(style = "overflow-y: auto; max-height: 250px;",
+            markdown("The Michigan Center for Youth Justice (MCYJ) is a non-profit organization dedicated to advancing policies and practices that reduce confinement and support trauma-informed, racially equitable, socio-economically and culturally responsive, community-based solutions for Michigan's justice-involved children, youth and young adults. 
     
               **Our Vision**
               
@@ -404,15 +406,19 @@ body <- dashboardBody(
               
               -   **Inclusion**: We believe that diverse perspectives create better solutions. Families who are impacted by the youth justice system should be at the center of our work.
               
-              -   **Restoration**: The youth justice system should be restorative and rehabilitative. Kids who get in trouble are still kids.")), 
+              -   **Restoration**: The youth justice system should be restorative and rehabilitative. Kids who get in trouble are still kids.")
+            )), 
                                                 
-            card_footer(markdown("[Michigan Center for Youth Justice](https://www.miyouthjustice.org/)"))),
+            card_footer(markdown("[Michigan Center for Youth Justice](https://www.miyouthjustice.org/)"))
+            ),
                                            
               card(full_screen = T, height = 650,
                                                 
-              card_image(file = "./images/ginsberg_about.png", href = "https://ginsberg.umich.edu/", height = 350),
+              card_image(file = "./images/ginsberg_about.png", href = "https://ginsberg.umich.edu/",
+                         style = "max-height: 350px; width: auto; object-fit: contain; display: block; margin-left: auto; margin-right: auto;"),
                                                 
-              card_body(markdown("The Edward Ginsberg Center is a community and civic engagement center with a mission to cultivate and steward equitable partnerships between communities and the University of Michigan in order to advance social change for the public good. Based upon this mission, our vision is for inclusive democracy; thriving, diverse communities; and equity and social justice. Centered in our principles, our work is focused on:
+              card_body(div(style = "overflow-y: auto; max-height: 250px;",
+              markdown("The Edward Ginsberg Center is a community and civic engagement center with a mission to cultivate and steward equitable partnerships between communities and the University of Michigan in order to advance social change for the public good. Based upon this mission, our vision is for inclusive democracy; thriving, diverse communities; and equity and social justice. Centered in our principles, our work is focused on:
               
                 -   **Partnerships**: We cultivate an expansive network of community partners (nonprofits, local governments, and K-12 schools), surface community-identified priorities, and connect them with students, faculty, and staff who are invested in positive social change.
                 
@@ -424,15 +430,18 @@ body <- dashboardBody(
                 
                 Our work is grounded in meaningful community-university partnerships that foster a culture of learning and improvement so that together we have the capability to build thriving, equitable, and just communities.
                 
-                CTAC partnerships focus on supporting nonprofits, schools, and governmental organizations to build capacity, while meeting the educational goals of students. We are invested in sustainable solutions that advance the impact of our partners' work toward key quality of life outcomes, and bolster their capacity to tell their stories, and secure funding.")),
+                CTAC partnerships focus on supporting nonprofits, schools, and governmental organizations to build capacity, while meeting the educational goals of students. We are invested in sustainable solutions that advance the impact of our partners' work toward key quality of life outcomes, and bolster their capacity to tell their stories, and secure funding.")
+              )),
                                                   
               card_footer(markdown("[The Edward Ginsberg Center](https://ginsberg.umich.edu/)"))),
                              
                 card(full_screen = T, height = 650,
                                   
-                card_image(file = "./images/statcom_about.jpeg", href = "https://sph.umich.edu/biostat/statcom/", height = 350),
+                card_image(file = "./images/statcom_about.jpeg", href = "https://sph.umich.edu/biostat/statcom/",
+                           style = "max-height: 350px; width: auto; object-fit: contain; display: block; margin-left: auto; margin-right: auto;"),
                                   
-                card_body(markdown("Statistics in the Community (STATCOM) at the University of Michigan is a community outreach program provided by graduate students in the Departments of Biostatistics, Statistics, and the Program for Survey Methodology at University of Michigan. The program offers the expertise of statistics graduate students, free of charge, to non-profit governmental and community organizations in the areas of data organization, analysis, and interpretation.
+                card_body(div(style = "overflow-y: auto; max-height: 250px;",
+                markdown("Statistics in the Community (STATCOM) at the University of Michigan is a community outreach program provided by graduate students in the Departments of Biostatistics, Statistics, and the Program for Survey Methodology at University of Michigan. The program offers the expertise of statistics graduate students, free of charge, to non-profit governmental and community organizations in the areas of data organization, analysis, and interpretation.
 
                   **Services Provided by STATCOM** 
                   
@@ -448,7 +457,8 @@ body <- dashboardBody(
                   
                   -   Use of data to detect trends and make predictions and projections. 
                   
-                  STATCOM is able to assist with study design, data analysis, and the interpretation of results, but does not have the resources to collect or enter data.")),
+                  STATCOM is able to assist with study design, data analysis, and the interpretation of results, but does not have the resources to collect or enter data.")
+                )),
                                                     
                 card_footer(markdown("[Statistics in the Community](https://sph.umich.edu/biostat/statcom/)"))),
           )
