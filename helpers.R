@@ -34,7 +34,7 @@ recentReports <- function(info) {
       
       filter(
         
-        difftime(dates[2], `Investigation Initiation Date`) / dmonths(1) <= 6) |>
+        difftime(dates, `Investigation Initiation Date`) / dmonths(1) <= 6) |>
       
       count() |> pull(n)
   })
