@@ -95,6 +95,7 @@ zip_centroids <- zips %>%
   select(zip, lat, lng)
 
 dates <- Sys.Date()
+dates_range<- range(data$info$`Final Report Date`)
 
 #facs <- sort(unique(info$`Facility Name`))
 

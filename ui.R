@@ -165,7 +165,7 @@ body <- dashboardBody(
                 
                 column(width = 4, dateRangeInput("Dates", strong("Report Date:"), 
                                                  
-                                                 start = dates[1], end = dates[2], min = dates[1], max = dates[2])),
+                                                 start = dates_range[1], end = dates_range[2], min = dates_range[1], max = dates_range[2])),
               ),
               
               # Download and update data buttons
@@ -222,7 +222,7 @@ body <- dashboardBody(
 
                 column(width = 4, dateRangeInput("Dates2", strong("Report Date:"),
 
-                                                 start = dates[1], end = dates[2], min = dates[1], max = dates[2])),
+                                                 start = dates_range[1], end = dates_range[2], min = dates_range[1], max = dates_range[2])),
               ),
 
               # Download and update data buttons
@@ -278,7 +278,7 @@ body <- dashboardBody(
 
                 column(width = 4, dateRangeInput("Dates3", strong("Report Date:"),
 
-                                                 start = dates[1], end = dates[2], min = dates[1], max = dates[2])),
+                                                 start = dates_range[1], end = dates_range[2], min = dates_range[1], max = dates_range[2])),
               ),
 
               # Download and update data buttons
