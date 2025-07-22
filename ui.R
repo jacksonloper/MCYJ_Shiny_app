@@ -6,7 +6,7 @@ header <- dashboardHeader(
 
 )
 # Adding MCYJ logo with clickable link as header title
-header$children[[2]]$children <-  tags$a(href='https://www.miyouthjustice.org',
+header$children[[2]]$children <-  tags$a(href='https://www.miyouthjustice.org', target="_blank",
                                            tags$img(src='MCYJ-LOGO.png', height='40', width='130'))
 
 ### Sidebar
@@ -323,7 +323,7 @@ body <- dashboardBody(
                 card_body(markdown("
                   ### About 
                   
-                  This dashboard was built using [R Shiny](https://shiny.rstudio.com/) in collaboration with the [Michigan Center for Youth Justice](https://www.miyouthjustice.org/), The Edward Ginsberg Center's Community Technical Assistance Collaborative, and [Statistics in the Community](https://sph.umich.edu/biostat/statcom/) at the University of Michigan."))
+                  This dashboard was built using <a href='https://shiny.rstudio.com/' target='_blank' rel='noopener noreferrer'>R Shiny</a> in collaboration with the Michigan Center for Youth Justice, The Edward Ginsberg Center's Community Technical Assistance Collaborative, and Statistics in the Community at the University of Michigan."))
                   ),
                             
               nav_panel("Key Terms",
@@ -363,9 +363,8 @@ body <- dashboardBody(
                 
                 In March 2023, public officials declared a public health state of emergency at Wayne County Detention Facility due to overcrowding alongside a lack of staff. County officials reported that the facility can comfortably house 80 youth. The average number of youth at the facility in 2021 was 68; in March 2023 there were 137 youth residing there. Surprisingly, the licensed capacity of the facility is reported as 166 in the data we received.
                 
-                Data for this case example was reported by Detroit Free Press on 3/21/23.
+                Data for this case example was reported by <a href='https://www.freep.com/story/news/local/michigan/wayne/2023/03/21/public-health-emergency-troubled-juvenile-jail/70032928007/' target='_blank' rel='noopener noreferrer'>Detroit Free Press</a> on 3/21/23 (requires a free online account to read).
                 
-                [https://www.freep.com/story/news/local/michigan/wayne/2023/03/21/public-health-emergency-troubled-juvenile-jail/70032928007/](https://www.freep.com/story/news/local/michigan/wayne/2023/03/21/public-health-emergency-troubled-juvenile-jail/70032928007/) 
                 "))
               ),
                             
@@ -409,7 +408,7 @@ body <- dashboardBody(
               -   **Restoration**: The youth justice system should be restorative and rehabilitative. Kids who get in trouble are still kids.")
             )), 
                                                 
-            card_footer(markdown("[Michigan Center for Youth Justice](https://www.miyouthjustice.org/)"))
+            card_footer(HTML('<a href="https://www.miyouthjustice.org/" target="_blank">Michigan Center for Youth Justice</a>'))
             ),
                                            
               card(full_screen = T, height = 650,
@@ -426,14 +425,14 @@ body <- dashboardBody(
                 
                 -   **Pathways**: We offer multiple pathways to civic engagement & community change to encourage the development of lifelong habits of civic learning.
                 
-                [The Edward Ginsberg Center's](https://ginsberg.umich.edu/) [Community Technical Assistance Collaborative](https://ginsberg.umich.edu/ctac) is a community-university partnership convened to serve a universal need identified by community partners around data and evaluation.
+                The Edward Ginsberg Center's <a href='https://ginsberg.umich.edu/ctac' target='_blank' rel='noopener noreferrer'>Community Technical Assistance Collaborative</a> is a community-university partnership convened to serve a universal need identified by community partners around data and evaluation.
                 
                 Our work is grounded in meaningful community-university partnerships that foster a culture of learning and improvement so that together we have the capability to build thriving, equitable, and just communities.
                 
                 CTAC partnerships focus on supporting nonprofits, schools, and governmental organizations to build capacity, while meeting the educational goals of students. We are invested in sustainable solutions that advance the impact of our partners' work toward key quality of life outcomes, and bolster their capacity to tell their stories, and secure funding.")
               )),
                                                   
-              card_footer(markdown("[The Edward Ginsberg Center](https://ginsberg.umich.edu/)"))),
+              card_footer(HTML('<a href="https://ginsberg.umich.edu/" target="_blank">The Edward Ginsberg Center</a>'))),
                              
                 card(full_screen = T, height = 650,
                                   
@@ -460,7 +459,7 @@ body <- dashboardBody(
                   STATCOM is able to assist with study design, data analysis, and the interpretation of results, but does not have the resources to collect or enter data.")
                 )),
                                                     
-                card_footer(markdown("[Statistics in the Community](https://sph.umich.edu/biostat/statcom/)"))),
+                card_footer(HTML('<a href="https://sph.umich.edu/biostat/statcom/" target="_blank">Statistics in the Community</a>'))),
           )
             
     )
