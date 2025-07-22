@@ -1,8 +1,9 @@
 #helper functions for creating plots in the dashboard
+
 library(dplyr)
 library(plotly)
 library(DT)
-library(zipcodeR)
+#library(zipcodeR) #https://github.com/gavinrozzi/zipcodeR
 library(viridis)
 
 ### Value box: Special Investigation Reports
@@ -704,6 +705,7 @@ mapReports <- function(violations, info, zips) {
     group_by(zip) |> count() |> ungroup() 
   
   plt_dat2 <- geo_join(zips, dat_sum, "GEOID20", "zip") 
+  #plt_dat2 <- left_join(zips, dat_sum, by = c("GEOID20" = "zip"))
   
   pal <- colorNumeric("Blues", domain=plt_dat2$n)
   
@@ -759,6 +761,7 @@ mapAllegations <- function(violations, info, zips) {
     group_by(zip) |> count() |> ungroup() 
   
   plt_dat2 <- geo_join(zips, dat_sum, "GEOID20", "zip") 
+  #plt_dat2 <- left_join(zips, dat_sum, by = c("GEOID20" = "zip"))
   
   pal <- colorNumeric("Oranges", domain=plt_dat2$n)
   
@@ -817,6 +820,7 @@ mapViolations <- function(violations, info, zips) {
     group_by(zip) |> count() |> ungroup() 
   
   plt_dat2 <- geo_join(zips, dat_sum, "GEOID20", "zip") 
+  #plt_dat2 <- left_join(zips, dat_sum, by = c("GEOID20" = "zip"))
   
   pal <- colorNumeric("Greens", domain=plt_dat2$n)
   
@@ -914,10 +918,17 @@ mapProgramType <- function(data) {
     select(`Facility Name`, zip, `Program Type`, `Effective Date`, `Expiration Date`)
   
   # Get latitude and longitude for each zip
-  df_points <- zipcodeR::geocode_zip(dat_sum$zip) %>% rename(zip = zipcode)
+  # Make sure zip codes are zero-padded 5-digit strings
+  dat_sum <- dat_sum %>%
+    mutate(zip = sprintf("%05s", zip))
+  
+  df_points <- dat_sum %>%
+    left_join(zip_centroids, by = "zip")
+  #df_points <- zipcodeR::geocode_zip(dat_sum$zip) %>% rename(zip = zipcode)
   
   # Merge the coordinates into the dataset
-  plt_dat2 <- left_join(dat_sum, df_points, by = "zip")
+  plt_dat2 <- df_points
+  #plt_dat2 <- left_join(dat_sum, df_points, by = "zip")
   
   # Create popup text for each marker
   popup_dat <- paste0("Facility Name: \n", plt_dat2$`Facility Name`, "<br>",
