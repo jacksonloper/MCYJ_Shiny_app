@@ -49,14 +49,25 @@ body <- dashboardBody(
             ),
             fluidRow(
               box(width = 12, solidHeader = TRUE, status = "primary",
-                  "Note: Data were available for facilities open and operating as of August 2022. Lower report freqencies in 2017-2020 are not necessarily indicative of the true number of violations across all facilities.")
-            ),
+                  HTML('Note: Data were available for facilities open and operating as of August 2022. Lower report freqencies in 2017-2020 are not necessarily indicative of the true number of violations across all facilities.
+                  Data was pulled from <a href="https://michildwelfarepubliclicensingsearch.michigan.gov/licagencysrch/" target="_blank">this public licensing search portal</a>.')
+                  )),
             fluidRow(
-              box(title = 'Number of Special Investigation Reports by Year',
+              box(title = tagList('Number of Special Investigation Reports by Year',
+                                  tags$div(style = "font-weight: normal; font-size: 85%; color: gray;",
+                                  "According to the Child Welfare Licensing Portal,
+                                  'Special Investigation Reports (SIRs) are conducted in response to rule related complaints received regarding a facility. 
+                                  The presence of a special investigation report on this site does mean there were substantiated rule violations. 
+                                  Please read any report in its entirety.'
+                                  This bar graph lists the total number of SIRs from all Michigan facilities per year.")),
                   plotlyOutput("reportsByYear"), width = 12)
             ),
             fluidRow(
-              box(width = 12, title = 'Number of Alleged Violations by Year',
+              box(width = 12, title = tagList('Number of Alleged Violations by Year',
+                                              tags$div(style = "font-weight: normal; font-size: 85%; color: gray;",
+                                                       "Each SIR contains at least one allegation that was investigated.
+                                                       Each allegation is handled separately, and it is determined whether a violation occurred or not.
+                                                       Like the SIR bar graph above, the numbers shown here are the total from all facilities per year.")),
                   tabsetPanel(
                     tabPanel('Overall', plotlyOutput("violationsByYearOverall")),
                     tabPanel('Violation Established', plotlyOutput("violationsByYearEst")),
@@ -107,7 +118,13 @@ body <- dashboardBody(
             # Methodology explanation text box at the bottom
             fluidRow(
               box(width = 12, title = "Methodology",
-                  "Add explanation here")
+                  HTML('PDF files of special investigation reports are downloaded from the licensing portal with a custom webscraping script.<br>
+                  A growing collection of case reports is stored in a Google Drive folder (link TBD) because the portal deletes any file older than two years old.<br>
+                  Information is collected from the reports with a custom text-scraping script.<br>
+                  The extracted information is stored in a data table in excel XLSX format.<br>
+                  The dashboard is generated, with custom scripts used to read in data table and perform descriptive statistics and interactive data visualizations.<br>
+                  Our codebase can be found <a href="https://github.com/statcom-um/MCYJ_Shiny_app" target="_blank">here</a>.')
+                  )
             )
             
     ),
