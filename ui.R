@@ -304,15 +304,42 @@ body <- dashboardBody(
     tabItem(tabName = "map",
             h2("Map"),
             
+            tagList(
+              fluidRow(
+                box(
+                  width = 12,
+                  title = "Geographic Distribution of Reports and Allegations Across All Years",
+                  solidHeader = TRUE,
+                  status = "primary"
+                )
+              ),
             fluidRow(
               box(leafletOutput("mapReports"), width = 6),
               box(leafletOutput("mapAllegations"), width = 6),
-            ),
+            )),
             
+            tagList(
+              fluidRow(
+                box(
+                  width = 12,
+                  title = "Geographic Distribution of Violations Across All Years",
+                  solidHeader = TRUE,
+                  status = "primary"
+                )
+              ),
             fluidRow(
               box(leafletOutput("mapViolations"), width = 12)
-            ),
+            )),
             
+            tagList(
+              fluidRow(
+                box(
+                  width = 12,
+                  title = "Geographic Distribution of Open Facilities",
+                  solidHeader = TRUE,
+                  status = "primary"
+                )
+              ),
             fluidRow(
               box(width = 9, 
                   leafletOutput("mapProgramType"),
@@ -324,7 +351,7 @@ body <- dashboardBody(
                 uiOutput("externalLegend"),
                 width = 3
               )
-             )
+             ))
 
             ),
     
