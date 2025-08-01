@@ -107,7 +107,11 @@ body <- dashboardBody(
                   plotlyOutput("numAllegationsSIR"))
             ),
             fluidRow(
-              box(width = 12, title = 'Top 10 Rule Codes',
+              box(width = 12,
+                  title = tagList('Top 10 Rule Codes',
+                                  tags$div(style = "font-weight: normal; font-size: 85%; color: gray;",
+                                           HTML('To learn more about these violations, 
+                                                please click <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vRGd_qNU24S4cha63MTDAjIb4FurDAxTtgfHH1Fqj3xjbn6rZV3gXuwA1ftLimhUDpuEKBcFJKdxMuj/pubhtml?urp=gmail_link" target="_blank">here</a>.'))),
                   plotlyOutput("reportsByRulecode"),
                   sliderInput("rangeRuleCode", "Select the year range to count the number of Rule Codes",
                               min(year(data$info$`Final Report Date`)), 
