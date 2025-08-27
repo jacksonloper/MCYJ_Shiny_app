@@ -80,7 +80,7 @@ body <- dashboardBody(
                   sliderInput("rangeSIR", "Select the year range to count the number of SIRs",
                               min(year(data$info$`Final Report Date`)), 
                               max(year(data$info$`Final Report Date`)), 
-                              value = c(2017, max(year(data$info$`Final Report Date`))),sep = " ")
+                              value = c(min(year(data$info$`Final Report Date`)), max(year(data$info$`Final Report Date`))),sep = " ")
               )
             ),
             fluidRow(
@@ -94,7 +94,7 @@ body <- dashboardBody(
                   sliderInput("rangeViolation", "Select the year range to calculate the rate",
                               min(year(data$info$`Final Report Date`)), 
                               max(year(data$info$`Final Report Date`)), 
-                              value = c(2017, max(year(data$info$`Final Report Date`))),sep = " "))
+                              value = c(min(year(data$info$`Final Report Date`)), max(year(data$info$`Final Report Date`))),sep = " "))
             ),
             fluidRow(
               box(width = 6, title = 'Proportion of Allegations with Violation Established by Year',
@@ -116,7 +116,7 @@ body <- dashboardBody(
                   sliderInput("rangeRuleCode", "Select the year range to count the number of Rule Codes",
                               min(year(data$info$`Final Report Date`)), 
                               max(year(data$info$`Final Report Date`)), 
-                              value = c(2017, max(year(data$info$`Final Report Date`))),sep = " ")
+                              value = c(min(year(data$info$`Final Report Date`)), max(year(data$info$`Final Report Date`))),sep = " ")
                 )
               ),
             # Methodology explanation text box at the bottom
@@ -126,6 +126,7 @@ body <- dashboardBody(
                   A growing collection of case reports is stored in a Google Drive folder (link TBD) because the portal deletes any file older than two years old.<br>
                   Information is collected from the reports with a custom text-scraping script.<br>
                   The extracted information is stored in a data table in excel XLSX format.<br>
+                  Though we attempt to process all available files, inconsistent formatting issues precludes this.<br>
                   The dashboard is generated, with custom scripts used to read in data table and perform descriptive statistics and interactive data visualizations.<br>
                   Our codebase can be found <a href="https://github.com/statcom-um/MCYJ_Shiny_app" target="_blank">here</a>.')
                   )
@@ -173,16 +174,16 @@ body <- dashboardBody(
               ),
               
               # Download and update data buttons
-              fluidRow(
-                column(width = 4),
+              #fluidRow(
+              #  column(width = 4),
                 
-                column(width = 2, downloadButton("downBtn", "Download the Data", style = "width:100%;")),
+              #  column(width = 2, downloadButton("downBtn", "Download the Data", style = "width:100%;")),
 
-                column(width = 2, actionButton("update", "Update the Data", icon = icon("refresh"), 
-                                               style = "width:100%;")),
+              #  column(width = 2, actionButton("update", "Update the Data", icon = icon("refresh"), 
+              #                                 style = "width:100%;")),
                 
-                column(width = 4)
-              ),
+              #  column(width = 4)
+              #),
               
               # Data Table readout
               #TODO: adjust height to scale with change in browser viewing window
@@ -230,15 +231,15 @@ body <- dashboardBody(
               ),
 
               # Download and update data buttons
-              fluidRow(
-                column(width = 4),
+              #fluidRow(
+              #  column(width = 4),
 
-                column(width = 2, downloadButton("downBtn2", "Download the Data", style = "width:100%;")),
+              #  column(width = 2, downloadButton("downBtn2", "Download the Data", style = "width:100%;")),
 
-                column(width = 2, actionButton("update2", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
+              #  column(width = 2, actionButton("update2", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
 
-                column(width = 4)
-              ),
+              #  column(width = 4)
+              #),
               
               # Data Table readout
               #TODO: adjust height to scale with change in browser viewing window
@@ -286,15 +287,15 @@ body <- dashboardBody(
               ),
 
               # Download and update data buttons
-              fluidRow(
-                column(width = 4),
+              #fluidRow(
+              #  column(width = 4),
 
-                column(width = 2, downloadButton("downBtn3", "Download the Data", style = "width:100%;")),
+              #  column(width = 2, downloadButton("downBtn3", "Download the Data", style = "width:100%;")),
 
-                column(width = 2, actionButton("update3", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
+              #  column(width = 2, actionButton("update3", "Update the Data", icon = icon("refresh"), style = "width:100%;")),
 
-                column(width = 4)
-              ),
+              #  column(width = 4)
+              #),
               
               # Data Table readout
               #TODO: adjust height to scale with change in browser viewing window

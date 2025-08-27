@@ -429,48 +429,46 @@ violationsByFacilityNEst <- function(violations, info) {
 ### Proportion of Allegations with Violation Established
 proportionAllegations <- function(violations, info) {
   df <- violations |>
-    
     left_join(
-      
-      select(info, 
-             
-             `File Name`, `Facility Name`, `Program Type`, `Final Report Date`),
-      
+      select(info, `File Name`, `Facility Name`, `Program Type`, `Final Report Date`),
       "File Name") |>
-    
     select(`Facility Name`, `Program Type`, `Final Report Date`, everything()) |>
-    
     mutate(
-      
-      `Violation Established` = if_else(
-        
-        `Violation Established` == "Yes", "Yes", "No", "No"), 
-      
+      `Violation Established` = if_else(`Violation Established` == "Yes", "Yes", "No", "No"), 
       year = year(`Final Report Date`)) |>
-    
-    group_by(`Violation Established`, year) |> count() |>
-    
-    group_by(year) |> mutate(proportion = round(n/sum(n), 2),
-                             Established = `Violation Established`)
+    filter(!is.na(year)) |>  # Remove any NA years
+    group_by(`Violation Established`, year) |> 
+    count() |>
+    ungroup()
   
-  p <- ggplot(df, aes(x = year, y = proportion, fill = Established)) +
-    
+  # Create complete dataset with all year-violation combinations
+  all_years <- seq(min(df$year), max(df$year))
+  violation_types <- c("No", "Yes")
+  
+  complete_df <- expand_grid(year = all_years, `Violation Established` = violation_types) |>
+    left_join(df, by = c("year", "Violation Established")) |>
+    mutate(n = replace_na(n, 0)) |>
+    group_by(year) |>
+    mutate(proportion = round(n/sum(n), 2)) |>
+    ungroup() |>
+    mutate(Established = `Violation Established`) |>
+    # Set factor levels for consistent stacking
+    mutate(Established = factor(Established, levels = c("No", "Yes")))
+  
+  p <- ggplot(complete_df, aes(x = year, y = proportion, fill = Established)) +
     geom_area() +
-    
-    geom_point(aes(text = paste(proportion*100, ifelse(Established == 'Yes',
-                                                       '% of allegations ended up with establised violation in ',
-                                                       '% of allegations ended up without establised violation in '), year, sep = '')), 
-               position="stack") +
-    
+    geom_point(data = complete_df %>% filter(n > 0),
+               aes(y = ifelse(Established == 'Yes', 
+                              proportion, 
+                              1.0),
+                   text = paste(proportion*100, ifelse(Established == 'Yes',
+                                                       '% of allegations ended up with established violation in ',
+                                                       '% of allegations ended up without established violation in '), 
+                                year, sep = ''))) +
     theme_minimal() + 
-    
     theme(legend.position = 'bottom') +
-    
     scale_fill_manual(values = c('No' = '#8cb898', 'Yes' = '#f89a56')) +
-    
-    labs(#title = "\nProportion of Allegations with Violation Established by Year",
-         x = "",
-         y = "Rate")
+    labs(x = "", y = "Rate")
   
   return(ggplotly(p, tooltip = 'text') %>% layout(legend = list(orientation = "h")))
 }
@@ -527,6 +525,8 @@ SIRSwithOneViolation <- function(violations, info) {
       
       year = year(`Final Report Date`)) |>
     
+    filter(!is.na(year)) |>
+    
     group_by(`File Name`, year) |>
     
     summarise(Violation = any(`Violation Established`)) |>
@@ -539,9 +539,10 @@ SIRSwithOneViolation <- function(violations, info) {
       
       Violation, "At Least 1 Violation", "No Violations")) |>
     
+    mutate(Violation = factor(Violation, levels = c("No Violations", "At Least 1 Violation"))) |>
+    
     group_by(year) |> mutate(proportion = round(n/sum(n), 2))
-  
-  
+
   p <- ggplot(df %>% left_join(data.frame(year = rep(2017:max(df$year), each =2), 
                                           Violation = rep(unique(df$Violation), max(df$year)-2016),
                                           n = rep(0, (max(df$year)-2016)*2), 
@@ -549,15 +550,20 @@ SIRSwithOneViolation <- function(violations, info) {
                                by = c('year', 'Violation')) %>% 
                 mutate(n.y =ifelse(is.na(n.y), n.x, n.y),
                        proportion.y =ifelse(is.na(proportion.y), proportion.x, proportion.y), 
-                       Violation = factor(Violation, levels = c('No Violations', 'At Least 1 Violation'))), 
+                       #Violation = factor(Violation, levels = c('No Violations', 'At Least 1 Violation'))
+                       ), 
               aes(x = year, y = proportion.y, fill = Violation)) +
     
     geom_area() +
     
-    geom_point(aes(text = paste(proportion.y*100, ifelse(Violation == 'No Violations',
+    geom_point(data = . %>% filter(n.y > 0),
+               aes(y = ifelse(Violation == 'At Least 1 Violation', 
+                              proportion.y, 
+                              1.0),
+                   text = paste(proportion.y*100, ifelse(Violation == 'No Violations',
                                                          '% of SIRs ended up with no violations in ',
-                                                         '% of SIRs ended up with at least 1 violations in '), year, sep = '')), 
-               position="stack") +
+                                                         '% of SIRs ended up with at least 1 violations in '), 
+                                year, sep = ''))) +
     
     theme_minimal() + 
     
@@ -580,7 +586,7 @@ reportInformationTable <- function(info, input) {
     
     select(`Facility Name`, `Program Type`, `Final Report Date`, 
            
-           everything(), -`File Name`, -Investigation, -Recommendation) |>
+           everything()) |>
     
     filter(
       

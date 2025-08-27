@@ -16,7 +16,6 @@ library(bslib)
 library(shinyauthr)
 library(shinyWidgets)
 library(readxl)
-library(openxlsx)
 library(tidyverse)
 library(dplyr)
 library(sf)
@@ -73,9 +72,9 @@ readData <- function(data_path) {
                        "COURT OPERATED RESIDENTIAL CARE FACILITY",
                      
                      T ~ "OTHER")) ,
-               violations = read_excel(data_path, "ALLEGATIONS") ,
+               violations = read_excel(data_path, "ALLEGATIONS", range = cell_cols("A:F")) ,
                
-               rules = read_excel(data_path, "RULES")
+               rules = read_excel(data_path, "RULES", col_types = rep("text", 5))
   )
   return(data)
 }

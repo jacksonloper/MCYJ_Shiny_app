@@ -100,22 +100,38 @@ server <- function(input, output) {
   output$reportInformationTable <- renderDataTable(reportInformationTable(data$info, input))
   
   ### Explorable Data Table: Alleged Violations
-  output$allegedViolationsTable <- renderDataTable(allegedViolationsTable(data$violations, data$info, input))
-  
+  output$allegedViolationsTable <- renderDataTable({
+    dt_object <- allegedViolationsTable(data$violations, data$info, input)
+    
+    # Extract the data and apply formatting
+    if("data" %in% names(dt_object$x)) {
+      table_data <- dt_object$x$data
+    } else {
+      # If it's already a datatable, just apply the formatting
+      dt_object %>%
+        formatStyle(columns = 1:ncol(dt_object$x$data), 
+                    `vertical-align` = 'top')
+    }
+  }, options = list(
+    initComplete = JS(
+      "function(settings, json) {",
+      "$(this.api().table().container()).find('td').css({'vertical-align': 'top'});",
+      "}")
+  ))  
   ### Explorable Data Table: Applicable Rules
   output$applicableRulesTable <- renderDataTable(applicableRulesTable(data$info, data$rules, input))
   
   ### Download data
-  output$downBtn <- output$downBtn2 <- output$downBtn3 <- downloadHandler(
+  #output$downBtn <- output$downBtn2 <- output$downBtn3 <- downloadHandler(
     
-    filename = function() { "DATA.xlsx" },
+  #  filename = function() { "DATA.xlsx" },
     
-    content  = function(file) { 
+  #  content  = function(file) { 
       
-      l <- list("INFORMATION" = info, "VIOLATIONS" = violations, "RULES" = rules)
+  #    l <- list("INFORMATION" = info, "VIOLATIONS" = violations, "RULES" = rules)
       
-      write.xlsx(l, file) }
-  )
+  #    write.xlsx(l, file) }
+  #)
   
   ### Update data
 
