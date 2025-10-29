@@ -26,7 +26,7 @@ library(viridis)
 ########################
 # read in data from excel sheet
 ########################
-data_path = "DATA.xlsx"
+data_path = "sources/DATA.xlsx"
 
 readData <- function(data_path) {
   data <- list(info = read_excel(data_path, "INFORMATION") |>
